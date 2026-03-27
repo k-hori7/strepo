@@ -16,7 +16,9 @@
 ```
 strepo/
 ├── CLAUDE.md          # このファイル
-├── .claude/agents/    # カスタムエージェント定義
+├── .claude/
+│   ├── agents/        # カスタムエージェント定義
+│   └── skills/        # カスタムスキル定義
 ├── doc/               # 要件定義・設計ドキュメント
 │   ├── requirements.md
 │   ├── db-design.md
@@ -24,7 +26,11 @@ strepo/
 │   ├── tech-stack.md
 │   └── adr/           # 意思決定記録
 ├── design/            # Figmaスクリーンショット等
+├── .storybook/        # Storybook設定
+├── public/            # 静的アセット
 └── src/               # ソースコード（Next.js）
+    ├── app/           # App Router ページ
+    └── components/    # UIコンポーネント
 ```
 
 ## カスタムエージェント
@@ -41,3 +47,6 @@ strepo/
 - ドキュメントは `doc/` 配下に集約
 - 意思決定の記録は `doc/adr/` にADR形式で残す
 - デザインアセットは `design/` に配置
+
+## コーディング規約
+- 型定義は `interface` ではなく `type` を使う

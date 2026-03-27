@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* next/font が <html> に注入するCSS変数をTailwind v4テーマに再登録 */
+  --font-inter: var(--font-inter);
+  --font-noto-sans-jp: var(--font-noto-sans-jp);
+}

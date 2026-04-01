@@ -178,11 +178,36 @@ describe("DoctorDashboard - 年度フィルタリング", () => {
 });
 
 describe("DoctorDashboard - コールバック", () => {
-  it("新規プロジェクトボタンクリックでonNewProjectが呼ばれる", () => {
-    const onNewProject = vi.fn();
-    render(<DoctorDashboard projects={mockProjects} onNewProject={onNewProject} />);
+  it("新規プロジェクトボタンクリックでモーダルが開く", () => {
+    render(<DoctorDashboard projects={mockProjects} />);
 
     fireEvent.click(screen.getByRole("button", { name: /新規プロジェクト/ }));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "顧問先の追加" })
+    ).toBeInTheDocument();
+  });
+
+  it("モーダルのフォーム送信でonNewProjectが呼ばれる", () => {
+    const onNewProject = vi.fn();
+    render(
+      <DoctorDashboard projects={mockProjects} onNewProject={onNewProject} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /新規プロジェクト/ }));
+    fireEvent.change(screen.getByLabelText("会社名"), {
+      target: { value: "テスト株式会社" },
+    });
+    fireEvent.change(screen.getByLabelText("受検開始日"), {
+      target: { value: "2026-05-01" },
+    });
+    fireEvent.change(screen.getByLabelText("受検終了日"), {
+      target: { value: "2026-05-31" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "プロジェクトを作成する" })
+    );
 
     expect(onNewProject).toHaveBeenCalledTimes(1);
   });

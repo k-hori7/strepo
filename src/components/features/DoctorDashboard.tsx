@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { Plus, Search, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
+import { NewProjectModal } from "./NewProjectModal";
 
 type ProjectStatus = "action_required" | "in_progress" | "unpaid" | "completed";
 
@@ -186,6 +187,7 @@ export function DoctorDashboard({
 }: DoctorDashboardProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeYear, setActiveYear] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const years = useMemo(() => {
     return [...new Set(projects.map((p) => p.fiscalYear))].sort(
@@ -219,7 +221,7 @@ export function DoctorDashboard({
           </h1>
           <button
             type="button"
-            onClick={onNewProject}
+            onClick={() => setIsModalOpen(true)}
             className="w-full md:w-auto flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-6 py-2.5 rounded-xl shadow-[0_10px_15px_-3px_rgba(13,148,136,0.1),0_4px_6px_-4px_rgba(13,148,136,0.1)] transition-colors"
           >
             <Plus aria-hidden="true" className="w-4 h-4" />
@@ -310,6 +312,15 @@ export function DoctorDashboard({
           </div>
         )}
       </main>
+      <NewProjectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={() => {
+          setIsModalOpen(false);
+          onNewProject?.();
+          // TODO: プロジェクト作成APIを呼び出す
+        }}
+      />
     </div>
   );
 }

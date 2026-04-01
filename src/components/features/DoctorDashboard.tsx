@@ -4,8 +4,7 @@ import { useState, useMemo } from "react";
 import { Plus, Search, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { NewProjectModal } from "./NewProjectModal";
-
-type ProjectStatus = "action_required" | "in_progress" | "unpaid" | "completed";
+import type { ProjectStatus } from "@/types/project";
 
 type Project = {
   id: string;

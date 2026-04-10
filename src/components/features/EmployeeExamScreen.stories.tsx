@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { fn } from "@storybook/test";
 import { EmployeeExamScreen } from "./EmployeeExamScreen";
 
 const meta = {
@@ -23,6 +22,6 @@ export const Mobile: Story = {
 
 export const WithSubmitHandler: Story = {
   args: {
-    onSubmit: fn(),
+    onSubmit: (data) => console.log("送信データ:", data),
   },
 };

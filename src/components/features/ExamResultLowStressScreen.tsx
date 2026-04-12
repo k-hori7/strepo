@@ -1,6 +1,5 @@
-import { AlertTriangle, Camera, TrendingUp } from "lucide-react";
+import { Camera, CheckCircle, TrendingDown, TrendingUp } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
-import { ExamResultInterviewButton } from "./ExamResultInterviewButton";
 import {
   type BarData,
   type BarItem,
@@ -9,44 +8,48 @@ import {
   RadarChart,
 } from "./ExamResultShared";
 
-type ExamResultHighStressScreenProps = {
+type ExamResultLowStressScreenProps = {
   reportId?: string;
   scores: ScoreItem[];
   radar: RadarData;
   bars: BarData;
-  onApplyInterview?: () => void;
 };
 
 export const DEFAULT_SCORES: ScoreItem[] = [
-  { category: "A", name: "心理的な仕事の負担", score: 142, comparison: "高い" },
-  { category: "A", name: "仕事の自立性", score: 72, comparison: "低い" },
-  { category: "A", name: "職場の対人関係", score: 128, comparison: "高い" },
-  { category: "B", name: "活気", score: 45, comparison: "低い" },
-  { category: "B", name: "疲労感", score: 135, comparison: "高い" },
-  { category: "C", name: "上司のサポート", score: 65, comparison: "低い" },
-  { category: "C", name: "同僚のサポート", score: 98, comparison: "平均的" },
-  { category: "D", name: "仕事の満足度", score: 55, comparison: "低い" },
+  { category: "A", name: "心理的な仕事の負担", score: 82, comparison: "低い" },
+  { category: "A", name: "仕事の自立性", score: 115, comparison: "高い" },
+  { category: "A", name: "職場の対人関係", score: 105, comparison: "平均的" },
+  { category: "B", name: "活気", score: 120, comparison: "高い" },
+  { category: "B", name: "疲労感", score: 78, comparison: "低い" },
+  { category: "C", name: "上司のサポート", score: 100, comparison: "平均的" },
+  { category: "C", name: "同僚のサポート", score: 112, comparison: "高い" },
+  { category: "D", name: "仕事の満足度", score: 102, comparison: "平均的" },
 ];
 
 export const DEFAULT_RADAR: RadarData = {
-  demand: 0.25,
-  control: 0.2,
-  bossSupport: 0.2,
-  peerSupport: 0.5,
-  relation: 0.3,
+  demand: 0.82,
+  control: 0.75,
+  bossSupport: 0.7,
+  peerSupport: 0.75,
+  relation: 0.75,
 };
 
 export const DEFAULT_BARS: BarData = {
-  vitality: { label: "活気 (元気度)", value: 0.25, level: "Low" },
-  fatigue: { label: "疲労感 (低さが良好)", value: 0.9, level: "High" },
-  satisfaction: { label: "仕事の満足度", value: 0.3, level: "Low" },
+  vitality: { label: "活気 (元気度)", value: 0.85, level: "High" },
+  fatigue: { label: "疲労感 (低さが良好)", value: 0.2, level: "Low" },
+  satisfaction: { label: "仕事の満足度", value: 0.6, level: "Normal" },
 };
 
 // --- Bar row ---
 
+const LEVEL_COLOR: Record<BarItem["level"], string> = {
+  High: "text-teal-600",
+  Low: "text-teal-600",
+  Normal: "text-gray-500",
+};
+
 function BarRow({ item }: { item: BarItem }) {
-  // 高ストレス版: High = 警告色 (赤), それ以外はグレー
-  const levelColor = item.level === "High" ? "text-red-500" : "text-gray-500";
+  const levelColor = LEVEL_COLOR[item.level];
   const pct = Math.round(item.value * 100);
 
   return (
@@ -57,7 +60,7 @@ function BarRow({ item }: { item: BarItem }) {
       </div>
       <div className="h-1.5 w-full rounded-full bg-gray-100">
         <div
-          className="h-1.5 rounded-full bg-red-400"
+          className="h-1.5 rounded-full bg-teal-400"
           style={{ width: `${pct}%` }}
           role="progressbar"
           aria-label={item.label}
@@ -74,31 +77,36 @@ function BarRow({ item }: { item: BarItem }) {
 
 function ComparisonCell({ comparison }: { comparison: ScoreItem["comparison"] }) {
   if (comparison === "高い") {
+    // 低ストレス版での「高い」は自立性・活気・サポートなど良好指標の上昇を意味する
     return (
-      <span className="inline-flex items-center gap-0.5 font-medium text-red-500">
+      <span className="inline-flex items-center gap-0.5 font-medium text-teal-600">
         高い
         <TrendingUp size={13} aria-hidden="true" />
       </span>
     );
   }
   if (comparison === "低い") {
-    // 高ストレス版での「低い」は良好指標の低下（活気・自立性など）を意味する
-    return <span className="font-medium text-red-500">低い</span>;
+    // 低ストレス版での「低い」は仕事の負担・疲労感など負荷指標の低下（良好）を意味する
+    return (
+      <span className="inline-flex items-center gap-0.5 font-medium text-teal-600">
+        低い
+        <TrendingDown size={13} aria-hidden="true" />
+      </span>
+    );
   }
   return <span className="text-gray-500">平均的</span>;
 }
 
 // --- Main component ---
 
-export function ExamResultHighStressScreen({
-  reportId = "2026-0214-082",
+export function ExamResultLowStressScreen({
+  reportId = "2026-0214-001",
   scores,
   radar,
   bars,
-  onApplyInterview,
-}: ExamResultHighStressScreenProps) {
+}: ExamResultLowStressScreenProps) {
   return (
-    <div className="min-h-screen bg-[#fdf8f8]">
+    <div className="min-h-screen bg-[#f5faf7]">
       <div className="mx-auto max-w-xl px-4 pb-16 pt-4">
         <header className="flex items-center justify-between py-4">
           <Logo size="md" />
@@ -108,29 +116,27 @@ export function ExamResultHighStressScreen({
         </header>
 
         <div className="mt-6 flex flex-col gap-5">
-          {/* Section 1: High Stress Alert */}
+          {/* Section 1: Stable Condition */}
           <section
-            aria-labelledby="high-stress-heading"
+            aria-labelledby="low-stress-heading"
             className="rounded-2xl bg-white px-8 py-8 shadow-md"
           >
             <div className="flex flex-col items-center gap-4 text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-500">
-                <AlertTriangle size={12} aria-hidden="true" />
-                High Stress Detected
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-600">
+                <CheckCircle size={12} aria-hidden="true" />
+                Stable Condition
               </span>
 
               <h1
-                id="high-stress-heading"
+                id="low-stress-heading"
                 className="text-3xl font-bold tracking-tight text-gray-900"
               >
-                高ストレス状態にあります
+                現在のストレスは良好です
               </h1>
 
               <p className="max-w-xs text-sm leading-relaxed text-gray-500">
-                心身に強い負荷がかかっている可能性があります。一人で抱え込まず、専門家への相談を検討してください。
+                心身の負荷は基準値内に収まっています。現在の良好なリズムを大切に、セルフケアを続けていきましょう。
               </p>
-
-              <ExamResultInterviewButton onClick={onApplyInterview} />
             </div>
           </section>
 
@@ -153,8 +159,8 @@ export function ExamResultHighStressScreen({
               <div className="flex-shrink-0">
                 <RadarChart
                   data={radar}
-                  fillColor="rgba(248,113,113,0.45)"
-                  strokeColor="rgb(239,68,68)"
+                  fillColor="rgba(52,211,153,0.45)"
+                  strokeColor="rgb(16,185,129)"
                 />
               </div>
               <div className="w-full max-w-[220px] flex-shrink-0 flex flex-col gap-4">
